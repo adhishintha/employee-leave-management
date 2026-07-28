@@ -18,37 +18,54 @@ function App() {
   const [leaveRequests, setLeaveRequests] = useState([]);
 
   // Handle employee leave application submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Create a new leave request with pending status
     const newRequest = {
       id: Date.now(),
-      employeeName: employeeName,
-      employeeId: employeeId,
-      leaveType: leaveType,
-      fromDate: fromDate,
-      toDate: toDate,
+      employee_name: employeeName,
+      employee_id: employeeId,
+      leave_type: leaveType,
+      from_date: fromDate,
+      to_date: toDate,
       reason: reason,
       status: "Pending",
     };
 
-    // Add new request to existing leave requests
-    setLeaveRequests([...leaveRequests, newRequest]);
+    try {
+      const response = await fetch("http://127.0.0.1:5000/employees", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newRequest),
+      });
 
-    // Clear all form fields after submission
-    setEmployeeName("");
-    setEmployeeId("");
-    setLeaveType("");
-    setFromDate("");
-    setToDate("");
-    setReason("");
+      if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+      }
 
-    // Show successful leave submission message
-    alert("Leave request submitted successfully!");
+      // Add new request to existing leave requests
+      setLeaveRequests([...leaveRequests, newRequest]);
 
-    // Navigate to leave requests page
-    setPage("requests");
+      // Clear all form fields after submission
+      setEmployeeName("");
+      setEmployeeId("");
+      setLeaveType("");
+      setFromDate("");
+      setToDate("");
+      setReason("");
+
+      // Show successful leave submission message
+      alert("Leave request submitted successfully!");
+
+      // Navigate to leave requests page
+      setPage("requests");
+    } catch (error) {
+      console.error("Failed to submit leave request:", error);
+      alert("Could not submit leave request. Please check the server and try again.");
+    }
   };
 
   return (
@@ -195,11 +212,11 @@ function App() {
                 {leaveRequests.map((request) => (
                   <tr key={request.id}>
 
-                    <td>{request.employeeId}</td>
-                    <td>{request.employeeName}</td>
-                    <td>{request.leaveType}</td>
-                    <td>{request.fromDate}</td>
-                    <td>{request.toDate}</td>
+                    <td>{request.employee_id}</td>
+                    <td>{request.employee_name}</td>
+                    <td>{request.leave_type}</td>
+                    <td>{request.from_date}</td>
+                    <td>{request.to_date}</td>
                     <td>{request.reason}</td>
                     <td>{request.status}</td>
 
