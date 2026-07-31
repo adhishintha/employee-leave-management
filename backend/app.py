@@ -192,5 +192,5 @@ def delete_leave(id):
 
 
 # -------------------- Run Server --------------------
-if __name__ == "__main__":
-    app.run(debug=True)
+if _name_ == "_main_":
+    app.run(host="0.0.0.0", port=5000, debug=True)
