@@ -55,18 +55,17 @@ pipeline {
             }
         }
 
-        stage('Deploy Backend') {
-            steps {
-                dir('backend') {
-                    sh 'pkill -f "app.py" || true'
-                    sh '''
-                        export JENKINS_NODE_COOKIE=dontKillMe
-                        nohup $PYTHON app.py > /home/ubuntu/backend.log 2>&1 &
-                        disown
-                    '''
-                }
-            }
+stage('Deploy Backend') {
+    steps {
+        dir('backend') {
+            sh 'pkill -f "app.py" || true'
+            sh '''
+                export JENKINS_NODE_COOKIE=dontKillMe
+                nohup $PYTHON app.py > /tmp/backend.log 2>&1 &
+            '''
         }
+    }
+}
     }
 
     post {
