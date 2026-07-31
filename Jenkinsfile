@@ -48,6 +48,21 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy Frontend') {
+            steps {
+                sh 'sudo cp -r frontend/dist/* /var/www/html/'
+            }
+        }
+
+        stage('Deploy Backend') {
+            steps {
+                dir('backend') {
+                    sh 'pkill -f "app.py" || true'
+                    sh 'nohup $PYTHON app.py > backend.log 2>&1 &'
+                }
+            }
+        }
     }
 
     post {
