@@ -2,25 +2,25 @@ pipeline {
     agent any
 
     environment {
-        PYTHON = 'C:\\Users\\DANESH\\AppData\\Local\\Programs\\Python\\Python314\\python.exe'
+        PYTHON = 'python3'
     }
 
     stages {
 
         stage('Environment Check') {
             steps {
-                bat '"%PYTHON%" --version'
-                bat '"%PYTHON%" -m pip --version'
-                bat 'node --version'
-                bat 'npm --version'
+                sh '$PYTHON --version'
+                sh '$PYTHON -m pip --version'
+                sh 'node --version'
+                sh 'npm --version'
             }
         }
 
         stage('Backend Setup') {
             steps {
                 dir('backend') {
-                    bat '"%PYTHON%" -m pip install --upgrade pip'
-                    bat '"%PYTHON%" -m pip install -r requirements.txt'
+                    sh '$PYTHON -m pip install --upgrade pip --break-system-packages'
+                    sh '$PYTHON -m pip install -r requirements.txt --break-system-packages'
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
         stage('Frontend Setup') {
             steps {
                 dir('frontend') {
-                    bat 'npm install'
+                    sh 'npm install'
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    bat 'npm run build'
+                    sh 'npm run build'
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
         stage('Backend Validation') {
             steps {
                 dir('backend') {
-                    bat '"%PYTHON%" -m py_compile app.py'
+                    sh '$PYTHON -m py_compile app.py'
                 }
             }
         }
